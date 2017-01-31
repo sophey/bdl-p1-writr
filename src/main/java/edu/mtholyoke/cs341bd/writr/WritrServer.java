@@ -22,22 +22,27 @@ import java.util.Vector;
  * @author jfoley
  */
 public class WritrServer extends AbstractHandler {
-  final String baseURL;
+  String baseURL;
+  String submitURL;
   Server jettyServer;
   Vector<WritrMessage> messageList = new Vector<>();
 
   public WritrServer(String baseURL, int port) throws IOException {
     this.baseURL = baseURL;
+    if(!baseURL.endsWith("/")) {
+      this.baseURL += '/';
+    }
+    this.submitURL = baseURL+"submit";
     jettyServer = new Server(port);
 
     ContextHandler staticCtx = new ContextHandler();
-    staticCtx.setContextPath(getStaticURL(""));
+    staticCtx.setContextPath("/static");
     ResourceHandler resources = new ResourceHandler();
     resources.setBaseResource(Resource.newResource("static/"));
     staticCtx.setHandler(resources);
 
     ContextHandler defaultCtx = new ContextHandler();
-    defaultCtx.setContextPath(baseURL);
+    defaultCtx.setContextPath("/");
     defaultCtx.setHandler(this);
 
     ContextHandlerCollection collection = new ContextHandlerCollection();
@@ -52,9 +57,6 @@ public class WritrServer extends AbstractHandler {
     jettyServer.join(); // wait for it to finish here!
   }
 
-  public String getSubmitURL() {
-    return baseURL+"submit";
-  }
   public String getStaticURL(String resource) {
     return baseURL+"static/"+resource;
   }
@@ -66,7 +68,7 @@ public class WritrServer extends AbstractHandler {
    */
   private void printWritrForm(PrintWriter output) {
     output.println("<div class=\"form\">");
-    output.println("  <form action=\""+getSubmitURL()+"\" method=\"POST\"method>");
+    output.println("  <form action=\""+ submitURL +"\" method=\"POST\"method>");
     output.println("     <input type=\"text\" name=\"message\" />");
     output.println("     <input type=\"submit\" value=\"Write!\" />");
     output.println("  </form>");
@@ -79,7 +81,7 @@ public class WritrServer extends AbstractHandler {
 
     String method = req.getMethod();
     String path = req.getPathInfo();
-    if("POST".equals(method) && getSubmitURL().equals(path)) {
+    if("POST".equals(method) && submitURL.equals(path)) {
       handleForm(req, resp);
       return;
     }
