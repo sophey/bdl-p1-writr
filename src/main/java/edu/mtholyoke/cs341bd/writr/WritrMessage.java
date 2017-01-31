@@ -21,6 +21,7 @@ public class WritrMessage implements Comparable<WritrMessage> {
   public void appendHTML(StringBuilder output) {
     output
         .append("<div class=\"message\">")
+        .append("<span class=\"datetime\">").append(Util.dateToEST(timeStamp)).append("</span>")
         .append(messageText)
         .append("</div>");
   }

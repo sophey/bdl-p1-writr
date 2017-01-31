@@ -14,15 +14,16 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collections;
 import java.util.Map;
+import java.util.Vector;
 
 /**
  * @author jfoley
  */
 public class WritrServer extends AbstractHandler {
   Server jettyServer;
-  List<WritrMessage> messageList = new ArrayList<>();
+  Vector<WritrMessage> messageList = new Vector<>();
 
   public WritrServer(int port) throws IOException {
     jettyServer = new Server(port);
@@ -71,7 +72,7 @@ public class WritrServer extends AbstractHandler {
     String path = req.getPathInfo();
     if("POST".equals(method) && "/submit".equals(path)) {
       handleForm(req, resp);
-      // Note, we explicitly fall through here, so that when we get a new message, we re-render the page.
+      return;
     }
 
     try (PrintWriter html = resp.getWriter()) {
@@ -87,15 +88,23 @@ public class WritrServer extends AbstractHandler {
 
       // Print all of our messages
       html.println("<div class=\"body\">");
+
+      // get a copy to sort:
+      ArrayList<WritrMessage> messages = new ArrayList<>(this.messageList);
+      Collections.sort(messages);
+
       StringBuilder messageHTML = new StringBuilder();
-      for (WritrMessage writrMessage : this.messageList) {
+      for (WritrMessage writrMessage : messages) {
         writrMessage.appendHTML(messageHTML);
       }
       html.println(messageHTML);
       html.println("</div>");
 
-      // Print the submission form again at the bottom of the page
-      printWritrForm(html);
+      // when we have a big page,
+      if(messages.size() > 25) {
+        // Print the submission form again at the bottom of the page
+        printWritrForm(html);
+      }
 
 
       html.println("  </body>");
@@ -103,13 +112,21 @@ public class WritrServer extends AbstractHandler {
     }
   }
 
-  private void handleForm(HttpServletRequest req, HttpServletResponse resp) {
+  private void handleForm(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     Map<String, String[]> parameterMap = req.getParameterMap();
 
     // if for some reason, we have multiple "message" fields in our form, just put a space between them, see Util.join.
     String text = Util.join(parameterMap.get("message"));
+
     if(text != null) {
+      // Good, got new message from form.
+      resp.setStatus(HttpServletResponse.SC_ACCEPTED);
       messageList.add(new WritrMessage(text));
+      HTTP.setupRedirectPage("/", resp);
+      return;
     }
+
+    // user submitted something weird.
+    resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Bad user.");
   }
 }
