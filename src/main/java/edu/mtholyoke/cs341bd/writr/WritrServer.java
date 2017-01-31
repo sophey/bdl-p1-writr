@@ -22,20 +22,22 @@ import java.util.Vector;
  * @author jfoley
  */
 public class WritrServer extends AbstractHandler {
+  final String baseURL;
   Server jettyServer;
   Vector<WritrMessage> messageList = new Vector<>();
 
-  public WritrServer(int port) throws IOException {
+  public WritrServer(String baseURL, int port) throws IOException {
+    this.baseURL = baseURL;
     jettyServer = new Server(port);
 
     ContextHandler staticCtx = new ContextHandler();
-    staticCtx.setContextPath("/static/");
+    staticCtx.setContextPath(getStaticURL(""));
     ResourceHandler resources = new ResourceHandler();
     resources.setBaseResource(Resource.newResource("static/"));
     staticCtx.setHandler(resources);
 
     ContextHandler defaultCtx = new ContextHandler();
-    defaultCtx.setContextPath("/");
+    defaultCtx.setContextPath(baseURL);
     defaultCtx.setHandler(this);
 
     ContextHandlerCollection collection = new ContextHandlerCollection();
@@ -50,6 +52,13 @@ public class WritrServer extends AbstractHandler {
     jettyServer.join(); // wait for it to finish here!
   }
 
+  public String getSubmitURL() {
+    return baseURL+"submit";
+  }
+  public String getStaticURL(String resource) {
+    return baseURL+"static/"+resource;
+  }
+
   /**
    * Made this a function so that we can have the submit form at the top & bottom of the page.
    * <a href="http://www.w3schools.com/html/html_forms.asp">Tutorial about Forms</a>
@@ -57,7 +66,7 @@ public class WritrServer extends AbstractHandler {
    */
   private void printWritrForm(PrintWriter output) {
     output.println("<div class=\"form\">");
-    output.println("  <form action=\"/submit\" method=\"POST\"method>");
+    output.println("  <form action=\""+getSubmitURL()+"\" method=\"POST\"method>");
     output.println("     <input type=\"text\" name=\"message\" />");
     output.println("     <input type=\"submit\" value=\"Write!\" />");
     output.println("  </form>");
@@ -70,7 +79,7 @@ public class WritrServer extends AbstractHandler {
 
     String method = req.getMethod();
     String path = req.getPathInfo();
-    if("POST".equals(method) && "/submit".equals(path)) {
+    if("POST".equals(method) && getSubmitURL().equals(path)) {
       handleForm(req, resp);
       return;
     }
@@ -79,7 +88,7 @@ public class WritrServer extends AbstractHandler {
       html.println("<html>");
       html.println("  <head>");
       html.println("    <title>Writr</title>");
-      html.println("    <link type=\"text/css\" rel=\"stylesheet\" href=\"static/writr.css\">");
+      html.println("    <link type=\"text/css\" rel=\"stylesheet\" href=\""+getStaticURL("writr.css")+"\">");
       html.println("  </head>");
       html.println("  <body>");
 
@@ -122,7 +131,7 @@ public class WritrServer extends AbstractHandler {
       // Good, got new message from form.
       resp.setStatus(HttpServletResponse.SC_ACCEPTED);
       messageList.add(new WritrMessage(text));
-      HTTP.setupRedirectPage("/", resp);
+      HTTP.setupRedirectPage(baseURL, resp);
       return;
     }
 
