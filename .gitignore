@@ -1,5 +1,9 @@
 *.class
 
+# Intellij files
+.idea
+*.iml
+
 # Where maven builds things
 /target/
 dependency-reduced-pom.xml

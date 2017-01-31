@@ -1,4 +1,7 @@
-body{
+body {
+    background-color: #222;
+}
+.body{
     margin:40px auto;
     max-width:600pt;
     line-height:1.6;
@@ -15,4 +18,10 @@ pre {
 }
 a {
     color: rgb(0,87,115)
+}
+div.message {
+    border: solid 1px #ccc;
+    margin: 3pt;
+    padding: 3pt;
+    background-color: #eee;
 }
