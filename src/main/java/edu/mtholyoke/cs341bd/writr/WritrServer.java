@@ -68,7 +68,7 @@ public class WritrServer extends AbstractHandler {
    */
   private void printWritrForm(PrintWriter output) {
     output.println("<div class=\"form\">");
-    output.println("  <form action=\""+ submitURL +"\" method=\"POST\"method>");
+    output.println("  <form action=\""+ submitURL +"\" method=\"POST\">");
     output.println("     <input type=\"text\" name=\"message\" />");
     output.println("     <input type=\"submit\" value=\"Write!\" />");
     output.println("  </form>");
@@ -133,11 +133,33 @@ public class WritrServer extends AbstractHandler {
       // Good, got new message from form.
       resp.setStatus(HttpServletResponse.SC_ACCEPTED);
       messageList.add(new WritrMessage(text));
-      HTTP.setupRedirectPage(baseURL, resp);
+      setupRedirectPage(resp);
       return;
     }
 
     // user submitted something weird.
     resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Bad user.");
   }
+
+  public void setupRedirectPage(HttpServletResponse resp) {
+    try (PrintWriter html = resp.getWriter()) {
+      html.println("<html>");
+      html.println("  <head>");
+      html.println("    <title>Writr: Thanks for your Submission</title>");
+      html.println("    <link type=\"text/css\" rel=\"stylesheet\" href=\"static/writr.css\">");
+      html.println("    "+this.baseURL);
+
+      // Print actual redirect directive:
+      html.println("<meta http-equiv=\"refresh\" content=\"0; url=front \">");
+
+      html.println("  </head>");
+      html.println("  <body>");
+      html.println("    <h1>Writr: Thanks for your Submission</h1>");
+      html.println("  </body>");
+      html.println("</html>");
+    } catch (IOException ignored) {
+      // Don't consider a browser that stops listening to us after submitting a form to be an error.
+    }
+  }
+
 }
