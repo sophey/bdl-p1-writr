@@ -22,17 +22,12 @@ import java.util.Vector;
  * @author jfoley
  */
 public class WritrServer extends AbstractHandler {
-  String baseURL;
-  String submitURL;
+  String metaURL;
   Server jettyServer;
   Vector<WritrMessage> messageList = new Vector<>();
 
   public WritrServer(String baseURL, int port) throws IOException {
-    this.baseURL = baseURL;
-    if(!baseURL.endsWith("/")) {
-      this.baseURL += '/';
-    }
-    this.submitURL = baseURL+"submit";
+    this.metaURL = "<base href=\""+baseURL+"\">";
     jettyServer = new Server(port);
 
     ContextHandler staticCtx = new ContextHandler();
@@ -58,7 +53,7 @@ public class WritrServer extends AbstractHandler {
   }
 
   public String getStaticURL(String resource) {
-    return baseURL+"static/"+resource;
+    return "static/"+resource;
   }
 
   /**
@@ -68,7 +63,7 @@ public class WritrServer extends AbstractHandler {
    */
   private void printWritrForm(PrintWriter output) {
     output.println("<div class=\"form\">");
-    output.println("  <form action=\""+ submitURL +"\" method=\"POST\"method>");
+    output.println("  <form action=\"submit\" method=\"POST\"method>");
     output.println("     <input type=\"text\" name=\"message\" />");
     output.println("     <input type=\"submit\" value=\"Write!\" />");
     output.println("  </form>");
@@ -81,7 +76,7 @@ public class WritrServer extends AbstractHandler {
 
     String method = req.getMethod();
     String path = req.getPathInfo();
-    if("POST".equals(method) && submitURL.equals(path)) {
+    if("POST".equals(method) && "/submit".equals(path)) {
       handleForm(req, resp);
       return;
     }
@@ -90,6 +85,7 @@ public class WritrServer extends AbstractHandler {
       html.println("<html>");
       html.println("  <head>");
       html.println("    <title>Writr</title>");
+      html.println("    "+metaURL);
       html.println("    <link type=\"text/css\" rel=\"stylesheet\" href=\""+getStaticURL("writr.css")+"\">");
       html.println("  </head>");
       html.println("  <body>");
@@ -133,7 +129,7 @@ public class WritrServer extends AbstractHandler {
       // Good, got new message from form.
       resp.setStatus(HttpServletResponse.SC_ACCEPTED);
       messageList.add(new WritrMessage(text));
-      HTTP.setupRedirectPage(baseURL, resp);
+      HTTP.setupRedirectPage("front", resp);
       return;
     }
 
