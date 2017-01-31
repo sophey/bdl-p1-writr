@@ -28,3 +28,12 @@ span.datetime {
     margin-right: 10pt;
     color: #444;
 }
+.thanks {
+    border: solid 1px #ccc;
+    margin: 3pt;
+    padding: 3pt;
+    background-color: #eee;
+}
+h1.logo {
+    color: #fff;
+}

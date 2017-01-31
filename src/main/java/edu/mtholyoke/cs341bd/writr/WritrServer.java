@@ -22,17 +22,12 @@ import java.util.Vector;
  * @author jfoley
  */
 public class WritrServer extends AbstractHandler {
-  String baseURL;
-  String submitURL;
+  String metaURL;
   Server jettyServer;
   Vector<WritrMessage> messageList = new Vector<>();
 
   public WritrServer(String baseURL, int port) throws IOException {
-    this.baseURL = baseURL;
-    if(!baseURL.endsWith("/")) {
-      this.baseURL += '/';
-    }
-    this.submitURL = baseURL+"submit";
+    this.metaURL = "<base href=\""+baseURL+"\">";
     jettyServer = new Server(port);
 
     ContextHandler staticCtx = new ContextHandler();
@@ -58,7 +53,7 @@ public class WritrServer extends AbstractHandler {
   }
 
   public String getStaticURL(String resource) {
-    return baseURL+"static/"+resource;
+    return "static/"+resource;
   }
 
   /**
@@ -68,11 +63,26 @@ public class WritrServer extends AbstractHandler {
    */
   private void printWritrForm(PrintWriter output) {
     output.println("<div class=\"form\">");
-    output.println("  <form action=\""+ submitURL +"\" method=\"POST\">");
+    output.println("  <form action=\"submit\" method=\"POST\">");
     output.println("     <input type=\"text\" name=\"message\" />");
     output.println("     <input type=\"submit\" value=\"Write!\" />");
     output.println("  </form>");
     output.println("</div>");
+  }
+
+  private void printWritrPageStart(PrintWriter html, String title) {
+    html.println("<html>");
+    html.println("  <head>");
+    html.println("    <title>"+title+"</title>");
+    html.println("    "+metaURL);
+    html.println("    <link type=\"text/css\" rel=\"stylesheet\" href=\""+getStaticURL("writr.css")+"\">");
+    html.println("  </head>");
+    html.println("  <body>");
+    html.println("  <h1 class=\"logo\">Writr</h1>");
+  }
+  private void printWritrPageEnd(PrintWriter html) {
+    html.println("  </body>");
+    html.println("</html>");
   }
 
   @Override
@@ -81,18 +91,13 @@ public class WritrServer extends AbstractHandler {
 
     String method = req.getMethod();
     String path = req.getPathInfo();
-    if("POST".equals(method) && submitURL.equals(path)) {
+    if("POST".equals(method) && "/submit".equals(path)) {
       handleForm(req, resp);
       return;
     }
 
     try (PrintWriter html = resp.getWriter()) {
-      html.println("<html>");
-      html.println("  <head>");
-      html.println("    <title>Writr</title>");
-      html.println("    <link type=\"text/css\" rel=\"stylesheet\" href=\""+getStaticURL("writr.css")+"\">");
-      html.println("  </head>");
-      html.println("  <body>");
+      printWritrPageStart(html, "Writr");
 
       // Print the form at the top of the page
       printWritrForm(html);
@@ -116,10 +121,7 @@ public class WritrServer extends AbstractHandler {
         // Print the submission form again at the bottom of the page
         printWritrForm(html);
       }
-
-
-      html.println("  </body>");
-      html.println("</html>");
+      printWritrPageEnd(html);
     }
   }
 
@@ -143,20 +145,20 @@ public class WritrServer extends AbstractHandler {
 
   public void setupRedirectPage(HttpServletResponse resp) {
     try (PrintWriter html = resp.getWriter()) {
-      html.println("<html>");
-      html.println("  <head>");
-      html.println("    <title>Writr: Thanks for your Submission</title>");
-      html.println("    <link type=\"text/css\" rel=\"stylesheet\" href=\"static/writr.css\">");
-      html.println("    "+this.baseURL);
-
+      printWritrPageStart(html, "Writr: Submitted!");
       // Print actual redirect directive:
-      html.println("<meta http-equiv=\"refresh\" content=\"0; url=front \">");
+      html.println("<meta http-equiv=\"refresh\" content=\"3; url=front \">");
 
-      html.println("  </head>");
-      html.println("  <body>");
-      html.println("    <h1>Writr: Thanks for your Submission</h1>");
-      html.println("  </body>");
-      html.println("</html>");
+      // Thank you, link.
+      html.println("<div class=\"body\">");
+      html.println("<div class=\"thanks\">");
+      html.println("<p>Thanks for your Submission!</p>");
+      html.println("<a href=\"front\">Back to the front page...</a> (automatically redirect in 3 seconds).");
+      html.println("</div>");
+      html.println("</div>");
+
+      printWritrPageEnd(html);
+
     } catch (IOException ignored) {
       // Don't consider a browser that stops listening to us after submitting a form to be an error.
     }
