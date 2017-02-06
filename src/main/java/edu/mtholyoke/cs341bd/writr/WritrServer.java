@@ -83,6 +83,7 @@ public class WritrServer extends AbstractHandler {
    * @param title the title of the page, since that goes in the header.
    */
   private void printWritrPageStart(PrintWriter html, String title) {
+    html.println("<!DOCTYPE html>"); // HTML5
     html.println("<html>");
     html.println("  <head>");
     html.println("    <title>"+title+"</title>");
