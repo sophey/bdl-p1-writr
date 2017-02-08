@@ -24,7 +24,8 @@ import java.util.Vector;
 public class WritrServer extends AbstractHandler {
   String metaURL;
   Server jettyServer;
-  Vector<WritrMessage> messageList = new Vector<>();
+  WritrModel model;
+//  Vector<WritrPost> messageList = new Vector<>();
 
   public WritrServer(String baseURL, int port) throws IOException {
     this.metaURL = "<base href=\""+baseURL+"\">";
@@ -48,6 +49,9 @@ public class WritrServer extends AbstractHandler {
     collection.addHandler(staticCtx);
     collection.addHandler(defaultCtx);
     jettyServer.setHandler(collection);
+
+    // create model
+    model = new WritrModel();
   }
 
   /**
@@ -132,12 +136,12 @@ public class WritrServer extends AbstractHandler {
       html.println("<div class=\"body\">");
 
       // get a copy to sort:
-      ArrayList<WritrMessage> messages = new ArrayList<>(this.messageList);
+      ArrayList<WritrPost> messages = new ArrayList<>(this.messageList);
       Collections.sort(messages);
 
       StringBuilder messageHTML = new StringBuilder();
-      for (WritrMessage writrMessage : messages) {
-        writrMessage.appendHTML(messageHTML);
+      for (WritrPost writrPost : messages) {
+        writrPost.appendHTML(messageHTML);
       }
       html.println(messageHTML);
       html.println("</div>");
@@ -167,7 +171,7 @@ public class WritrServer extends AbstractHandler {
     if(text != null) {
       // Good, got new message from form.
       resp.setStatus(HttpServletResponse.SC_ACCEPTED);
-      messageList.add(new WritrMessage(text));
+      messageList.add(new WritrPost(text));
 
       // Respond!
       try (PrintWriter html = resp.getWriter()) {
