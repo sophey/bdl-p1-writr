@@ -192,28 +192,7 @@ public class WritrServer extends AbstractHandler {
 
       writrPost.addComment(new WritrPost(text, user, title, 0));
 
-      // Respond!
-      try (PrintWriter html = resp.getWriter()) {
-        WritrView.printWritrPageStart(html, "Writr: Submitted!", metaURL,
-            getStaticURL("writr.css"));
-        // Print actual redirect directive:
-        html.println("<meta http-equiv=\"refresh\" content=\"3; url=front \">");
-
-        // Thank you, link.
-        html.println("<div class=\"body\">");
-        html.println("<div class=\"thanks\">");
-        html.println("<p>Thanks for your Submission!</p>");
-        html.println("<a href=\"front\">Back to the front page...</a> " +
-            "(automatically redirect in 3 seconds).");
-        html.println("</div>");
-        html.println("</div>");
-
-        WritrView.printWritrPageEnd(html);
-
-      } catch (IOException ignored) {
-        // Don't consider a browser that stops listening to us after
-        // submitting a form to be an error.
-      }
+      submitPage(resp);
 
       return;
     }
@@ -247,28 +226,7 @@ public class WritrServer extends AbstractHandler {
       resp.setStatus(HttpServletResponse.SC_ACCEPTED);
       model.addPost(new WritrPost(text, user, title, model.getNextPostID()));
 
-      // Respond!
-      try (PrintWriter html = resp.getWriter()) {
-        WritrView.printWritrPageStart(html, "Writr: Submitted!", metaURL,
-            getStaticURL("writr.css"));
-        // Print actual redirect directive:
-        html.println("<meta http-equiv=\"refresh\" content=\"3; url=front \">");
-
-        // Thank you, link.
-        html.println("<div class=\"body\">");
-        html.println("<div class=\"thanks\">");
-        html.println("<p>Thanks for your Submission!</p>");
-        html.println("<a href=\"front\">Back to the front page...</a> " +
-            "(automatically redirect in 3 seconds).");
-        html.println("</div>");
-        html.println("</div>");
-
-        WritrView.printWritrPageEnd(html);
-
-      } catch (IOException ignored) {
-        // Don't consider a browser that stops listening to us after
-        // submitting a form to be an error.
-      }
+      submitPage(resp);
 
       return;
     }
@@ -276,4 +234,30 @@ public class WritrServer extends AbstractHandler {
     // user submitted something weird.
     resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Bad user.");
   }
+
+  private void submitPage(HttpServletResponse resp) {
+    // Respond!
+    try (PrintWriter html = resp.getWriter()) {
+      WritrView.printWritrPageStart(html, "Writr: Submitted!", metaURL,
+          getStaticURL("writr.css"));
+      // Print actual redirect directive:
+      html.println("<meta http-equiv=\"refresh\" content=\"3; url=front \">");
+
+      // Thank you, link.
+      html.println("<div class=\"body\">");
+      html.println("<div class=\"thanks\">");
+      html.println("<p>Thanks for your Submission!</p>");
+      html.println("<a href=\"front\">Back to the front page...</a> " +
+          "(automatically redirect in 3 seconds).");
+      html.println("</div>");
+      html.println("</div>");
+
+      WritrView.printWritrPageEnd(html);
+
+    } catch (IOException ignored) {
+      // Don't consider a browser that stops listening to us after
+      // submitting a form to be an error.
+    }
+  }
+
 }
