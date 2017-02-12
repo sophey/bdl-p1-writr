@@ -42,9 +42,9 @@ public class WritrView {
   public static void printWritrForm(PrintWriter output) {
     output.println("<div class=\"form\">");
     output.println("  <form action=\"submit\" method=\"POST\">");
-    output.println("     User: <input type=\"text\" name=\"user\" />");
-    output.println("     <br>Title: <input type=\"text\" name=\"title\" />");
-    output.println("     <br>Message: <input type=\"text\" name=\"message\" />");
+    output.println("  <label>User: <input type=\"text\" name=\"user\" /></label>"); //changed this
+    output.println(" <label><br>Title: <input type=\"text\" name=\"title\" /></label>");
+    output.println("  <label><br>Message: <input type=\"text\" name=\"message\" /></label>");
     output.println("     <br><input type=\"submit\" value=\"Write!\" />");
     output.println("  </form>");
     output.println("</div>");

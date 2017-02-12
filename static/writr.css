@@ -8,6 +8,9 @@ body {
     font-size:18px;
     padding:0 10px
 }
+label{
+    color: white;
+}
 h1,h2,h3{
     line-height:1.2;
     color: rgb(0,87,115)
