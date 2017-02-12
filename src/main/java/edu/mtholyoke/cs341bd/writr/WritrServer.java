@@ -120,7 +120,7 @@ public class WritrServer extends AbstractHandler {
       StringBuilder messageHTML = new StringBuilder();
       for (int postId : messages) {
         WritrPost writrPost = model.getPost(postId);
-        WritrView.appendHTML(messageHTML, writrPost);
+        WritrView.displayPost(messageHTML, writrPost);
       }
       html.println(messageHTML);
       html.println("</div>");
@@ -151,11 +151,11 @@ public class WritrServer extends AbstractHandler {
       StringBuilder messageHTML = new StringBuilder();
 
       WritrPost writrPost = model.getPost(uid);
-      WritrView.appendHTML(messageHTML, writrPost);
+      WritrView.displayPost(messageHTML, writrPost);
 
       List<WritrPost> comments = writrPost.getComments();
       for (WritrPost post : comments) {
-        WritrView.appendHTML(messageHTML, post);
+        WritrView.displayComment(messageHTML, post);
       }
 
       html.println(messageHTML);
@@ -190,7 +190,7 @@ public class WritrServer extends AbstractHandler {
       resp.setStatus(HttpServletResponse.SC_ACCEPTED);
       WritrPost writrPost = model.getPost(Integer.parseInt(path.substring(15)));
 
-      writrPost.addComment(new WritrPost(text, user, title, model.getNextPostID()));
+      writrPost.addComment(new WritrPost(text, user, title, 0));
 
       // Respond!
       try (PrintWriter html = resp.getWriter()) {
