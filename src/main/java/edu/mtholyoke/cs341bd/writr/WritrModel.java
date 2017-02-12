@@ -26,4 +26,7 @@ public class WritrModel {
     return nextPostID;
   }
 
+  public Map<Integer, WritrPost> getPosts() {
+    return posts;
+  }
 }
