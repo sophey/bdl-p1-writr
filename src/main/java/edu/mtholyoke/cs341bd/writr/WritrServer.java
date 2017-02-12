@@ -149,7 +149,7 @@ public class WritrServer extends AbstractHandler {
     if (text != null && user != null && title != null) {
       // Good, got new message from form.
       resp.setStatus(HttpServletResponse.SC_ACCEPTED);
-      model.addPost(new WritrPost(text, user, title));
+      model.addPost(new WritrPost(text, user, title, model.getNextPostID()));
 
       // Respond!
       try (PrintWriter html = resp.getWriter()) {

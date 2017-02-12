@@ -25,18 +25,20 @@ public class WritrPost implements Comparable<WritrPost> {
   String userText;
   String titleText;
   List<WritrPost> comments;
+  int uid;
 
   /**
    * Create a message and init its time stamp.
    *
    * @param text the text of the message.
    */
-  public WritrPost(String text, String user, String title) {
+  public WritrPost(String text, String user, String title, int UID) {
     messageText = text;
     userText = user;
     titleText = title;
     comments = new LinkedList<>();
     timeStamp = System.currentTimeMillis();
+    uid = UID;
   }
 
   public long getTimeStamp() {
@@ -63,6 +65,9 @@ public class WritrPost implements Comparable<WritrPost> {
     return comments;
   }
 
+  public int getUid() {
+    return uid;
+  }
 
   /**
    * Sort newer messages to top by default. Maybe someday we'll sort in other

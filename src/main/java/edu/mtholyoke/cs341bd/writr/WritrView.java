@@ -20,7 +20,8 @@ public class WritrView {
     output
         .append("<div class=\"message\">")
         .append("<span class=\"datetime\">")
-        .append(Util.dateToEST(post.getTimeStamp()))
+        .append("<a href=/uid/" + post.getUid() + ">" + Util.dateToEST(post
+            .getTimeStamp()) + "</a>")
         .append("</span><br><span>User: ")
         .append(post.getUserText())
         .append("</span><br><span>Title: ")
@@ -42,9 +43,12 @@ public class WritrView {
   public static void printWritrForm(PrintWriter output) {
     output.println("<div class=\"form\">");
     output.println("  <form action=\"submit\" method=\"POST\">");
-    output.println("  <label>User: <input type=\"text\" name=\"user\" /></label>"); //changed this
-    output.println(" <label><br>Title: <input type=\"text\" name=\"title\" /></label>");
-    output.println("  <label><br>Message: <input type=\"text\" name=\"message\" /></label>");
+    output.println("  <label>User: <input type=\"text\" name=\"user\" " +
+        "/></label>"); //changed this
+    output.println(" <label><br>Title: <input type=\"text\" name=\"title\" " +
+        "/></label>");
+    output.println("  <label><br>Message: <input type=\"text\" " +
+        "name=\"message\" /></label>");
     output.println("     <br><input type=\"submit\" value=\"Write!\" />");
     output.println("  </form>");
     output.println("</div>");
@@ -57,7 +61,8 @@ public class WritrView {
    * @param html  where to write to; get this from the HTTP response.
    * @param title the title of the page, since that goes in the header.
    */
-  public static void printWritrPageStart(PrintWriter html, String title, String metaURL, String staticURL) {
+  public static void printWritrPageStart(PrintWriter html, String title,
+                                         String metaURL, String staticURL) {
     html.println("<!DOCTYPE html>"); // HTML5
     html.println("<html>");
     html.println("  <head>");
