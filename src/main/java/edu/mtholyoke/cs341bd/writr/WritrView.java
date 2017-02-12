@@ -55,6 +55,29 @@ public class WritrView {
   }
 
   /**
+   * Made this a function so that we can have the submit form at the top &
+   * bottom of the page.
+   * <a href="http://www.w3schools.com/html/html_forms.asp">Tutorial about
+   * Forms</a>
+   *
+   * @param output where to write our HTML to
+   */
+  public static void printCommentForm(PrintWriter output, int uid) {
+    output.println("<div class=\"form\">");
+    output.println("  <form action=\"submitComment/" + uid + "\" " +
+        "method=\"POST\">");
+    output.println("  <label>User: <input type=\"text\" name=\"user\" " +
+        "/></label>"); //changed this
+    output.println(" <label><br>Title: <input type=\"text\" name=\"title\" " +
+        "/></label>");
+    output.println("  <label><br>Message: <input type=\"text\" " +
+        "name=\"message\" /></label>");
+    output.println("     <br><input type=\"submit\" value=\"Write!\" />");
+    output.println("  </form>");
+    output.println("</div>");
+  }
+
+  /**
    * HTML top boilerplate; put in a function so that I can use it for all the
    * pages I come up with.
    *

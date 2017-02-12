@@ -69,6 +69,10 @@ public class WritrPost implements Comparable<WritrPost> {
     return uid;
   }
 
+  public void addComment(WritrPost comment) {
+    comments.add(comment);
+  }
+
   /**
    * Sort newer messages to top by default. Maybe someday we'll sort in other
    * ways.

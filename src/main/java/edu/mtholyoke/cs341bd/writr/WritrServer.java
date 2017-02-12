@@ -89,8 +89,16 @@ public class WritrServer extends AbstractHandler {
 
     String method = req.getMethod();
     String path = req.getPathInfo();
-    if ("POST".equals(method) && "/submit".equals(path)) {
-      handleForm(req, resp);
+    if ("POST".equals(method)) {
+      if ("/submit".equals(path)) {
+        handleForm(req, resp);
+        return;
+      } else if (path.contains("/submitComment")) {
+        handleCommentForm(req, resp, path);
+        return;
+      }
+    } else if ("GET".equals(method) && path.contains("/uid")) {
+      handlePostPage(path, resp);
       return;
     }
 
@@ -124,6 +132,94 @@ public class WritrServer extends AbstractHandler {
       }
       WritrView.printWritrPageEnd(html);
     }
+  }
+
+  private void handlePostPage(String path, HttpServletResponse resp) throws
+      IOException {
+    try (PrintWriter html = resp.getWriter()) {
+      WritrView.printWritrPageStart(html, "Writr", metaURL, getStaticURL
+          ("writr.css"));
+
+      int uid = Integer.parseInt(path.substring(5));
+
+      // Print the form at the top of the page
+      WritrView.printCommentForm(html, uid);
+
+      // Print all of our messages
+      html.println("<div class=\"body\">");
+
+      StringBuilder messageHTML = new StringBuilder();
+
+      WritrPost writrPost = model.getPost(uid);
+      WritrView.appendHTML(messageHTML, writrPost);
+
+      List<WritrPost> comments = writrPost.getComments();
+      for (WritrPost post : comments) {
+        WritrView.appendHTML(messageHTML, post);
+      }
+
+      html.println(messageHTML);
+      html.println("</div>");
+
+      WritrView.printWritrPageEnd(html);
+    }
+  }
+
+  /**
+   * When a user submits (enter key) or pressed the "Write!" button, we'll
+   * get their request in here. This is called explicitly from handle, above.
+   *
+   * @param req  -- we'll grab the form parameters from here.
+   * @param resp -- where to write their "success" page.
+   * @throws IOException again, real life happens.
+   */
+  private void handleCommentForm(HttpServletRequest req, HttpServletResponse
+      resp, String path) throws IOException {
+    Map<String, String[]> parameterMap = req.getParameterMap();
+
+    // if for some reason, we have multiple "message" fields in our form,
+    // just put a space between them, see Util.join.
+    // Note that message comes from the name="message" parameter in our
+    // <input> elements on our form.
+    String text = Util.join(parameterMap.get("message"));
+    String user = Util.join(parameterMap.get("user"));
+    String title = Util.join(parameterMap.get("title"));
+
+    if (text != null && user != null && title != null) {
+      // Good, got new message from form.
+      resp.setStatus(HttpServletResponse.SC_ACCEPTED);
+      WritrPost writrPost = model.getPost(Integer.parseInt(path.substring(15)));
+
+      writrPost.addComment(new WritrPost(text, user, title, model.getNextPostID()));
+
+      // Respond!
+      try (PrintWriter html = resp.getWriter()) {
+        WritrView.printWritrPageStart(html, "Writr: Submitted!", metaURL,
+            getStaticURL("writr.css"));
+        // Print actual redirect directive:
+        html.println("<meta http-equiv=\"refresh\" content=\"3; url=front \">");
+
+        // Thank you, link.
+        html.println("<div class=\"body\">");
+        html.println("<div class=\"thanks\">");
+        html.println("<p>Thanks for your Submission!</p>");
+        html.println("<a href=\"front\">Back to the front page...</a> " +
+            "(automatically redirect in 3 seconds).");
+        html.println("</div>");
+        html.println("</div>");
+
+        WritrView.printWritrPageEnd(html);
+
+      } catch (IOException ignored) {
+        // Don't consider a browser that stops listening to us after
+        // submitting a form to be an error.
+      }
+
+      return;
+    }
+
+    // user submitted something weird.
+    resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Bad user.");
   }
 
   /**
