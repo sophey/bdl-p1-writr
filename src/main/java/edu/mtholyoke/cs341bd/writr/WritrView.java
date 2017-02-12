@@ -19,8 +19,13 @@ public class WritrView {
         .append("<div class=\"message\">")
         .append("<span class=\"datetime\">")
         .append(Util.dateToEST(post.getTimeStamp()))
-        .append("</span>")
+        .append("</span><br><span>User: ")
+        .append(post.getUserText())
+        .append("</span><br><span>Title: ")
+        .append(post.getTitleText())
+        .append("</span><br><span>Message: ")
         .append(post.getMessageText())
+        .append("</span>")
         .append("</div>");
   }
 

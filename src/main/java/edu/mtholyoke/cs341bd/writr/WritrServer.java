@@ -81,10 +81,10 @@ public class WritrServer extends AbstractHandler {
   private void printWritrForm(PrintWriter output) {
     output.println("<div class=\"form\">");
     output.println("  <form action=\"submit\" method=\"POST\">");
-    output.println("     <input type=\"text\" name=\"user\" />");
-    output.println("     <input type=\"text\" name=\"title\" />");
-    output.println("     <input type=\"text\" name=\"message\" />");
-    output.println("     <input type=\"submit\" value=\"Write!\" />");
+    output.println("     User: <input type=\"text\" name=\"user\" />");
+    output.println("     <br>Title: <input type=\"text\" name=\"title\" />");
+    output.println("     <br>Message: <input type=\"text\" name=\"message\" />");
+    output.println("     <br><input type=\"submit\" value=\"Write!\" />");
     output.println("  </form>");
     output.println("</div>");
   }
