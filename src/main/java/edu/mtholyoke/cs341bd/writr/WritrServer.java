@@ -22,7 +22,6 @@ public class WritrServer extends AbstractHandler {
   String metaURL;
   Server jettyServer;
   WritrModel model;
-//  Vector<WritrPost> messageList = new Vector<>();
 
   public WritrServer(String baseURL, int port) throws IOException {
     this.metaURL = "<base href=\"" + baseURL + "\">";
@@ -71,55 +70,6 @@ public class WritrServer extends AbstractHandler {
   }
 
   /**
-   * Made this a function so that we can have the submit form at the top &
-   * bottom of the page.
-   * <a href="http://www.w3schools.com/html/html_forms.asp">Tutorial about
-   * Forms</a>
-   *
-   * @param output where to write our HTML to
-   */
-  private void printWritrForm(PrintWriter output) {
-    output.println("<div class=\"form\">");
-    output.println("  <form action=\"submit\" method=\"POST\">");
-    output.println("     User: <input type=\"text\" name=\"user\" />");
-    output.println("     <br>Title: <input type=\"text\" name=\"title\" />");
-    output.println("     <br>Message: <input type=\"text\" name=\"message\" />");
-    output.println("     <br><input type=\"submit\" value=\"Write!\" />");
-    output.println("  </form>");
-    output.println("</div>");
-  }
-
-  /**
-   * HTML top boilerplate; put in a function so that I can use it for all the
-   * pages I come up with.
-   *
-   * @param html  where to write to; get this from the HTTP response.
-   * @param title the title of the page, since that goes in the header.
-   */
-  private void printWritrPageStart(PrintWriter html, String title) {
-    html.println("<!DOCTYPE html>"); // HTML5
-    html.println("<html>");
-    html.println("  <head>");
-    html.println("    <title>" + title + "</title>");
-    html.println("    " + metaURL);
-    html.println("    <link type=\"text/css\" rel=\"stylesheet\" href=\"" +
-        getStaticURL("writr.css") + "\">");
-    html.println("  </head>");
-    html.println("  <body>");
-    html.println("  <h1 class=\"logo\">Writr</h1>");
-  }
-
-  /**
-   * HTML bottom boilerplate; close all the tags we open in printWritrPageStart.
-   *
-   * @param html where to write to; get this from the HTTP response.
-   */
-  private void printWritrPageEnd(PrintWriter html) {
-    html.println("  </body>");
-    html.println("</html>");
-  }
-
-  /**
    * The main callback from Jetty.
    *
    * @param resource what is the user asking for from the server?
@@ -145,10 +95,11 @@ public class WritrServer extends AbstractHandler {
     }
 
     try (PrintWriter html = resp.getWriter()) {
-      printWritrPageStart(html, "Writr");
+      WritrView.printWritrPageStart(html, "Writr", metaURL, getStaticURL
+          ("writr.css"));
 
       // Print the form at the top of the page
-      printWritrForm(html);
+      WritrView.printWritrForm(html);
 
       // Print all of our messages
       html.println("<div class=\"body\">");
@@ -156,6 +107,7 @@ public class WritrServer extends AbstractHandler {
       // get a copy to sort:
       ArrayList<Integer> messages = new ArrayList<>(model.getPosts().keySet());
       Collections.sort(messages);
+      Collections.reverse(messages);
 
       StringBuilder messageHTML = new StringBuilder();
       for (int postId : messages) {
@@ -168,9 +120,9 @@ public class WritrServer extends AbstractHandler {
       // when we have a big page,
       if (messages.size() > 25) {
         // Print the submission form again at the bottom of the page
-        printWritrForm(html);
+        WritrView.printWritrForm(html);
       }
-      printWritrPageEnd(html);
+      WritrView.printWritrPageEnd(html);
     }
   }
 
@@ -201,7 +153,8 @@ public class WritrServer extends AbstractHandler {
 
       // Respond!
       try (PrintWriter html = resp.getWriter()) {
-        printWritrPageStart(html, "Writr: Submitted!");
+        WritrView.printWritrPageStart(html, "Writr: Submitted!", metaURL,
+            getStaticURL("writr.css"));
         // Print actual redirect directive:
         html.println("<meta http-equiv=\"refresh\" content=\"3; url=front \">");
 
@@ -214,7 +167,7 @@ public class WritrServer extends AbstractHandler {
         html.println("</div>");
         html.println("</div>");
 
-        printWritrPageEnd(html);
+        WritrView.printWritrPageEnd(html);
 
       } catch (IOException ignored) {
         // Don't consider a browser that stops listening to us after

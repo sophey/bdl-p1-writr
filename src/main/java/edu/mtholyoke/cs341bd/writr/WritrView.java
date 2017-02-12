@@ -1,5 +1,7 @@
 package edu.mtholyoke.cs341bd.writr;
 
+import java.io.PrintWriter;
+
 /**
  * Created by Sophey on 2/10/17.
  */
@@ -27,6 +29,57 @@ public class WritrView {
         .append(post.getMessageText())
         .append("</span>")
         .append("</div>");
+  }
+
+  /**
+   * Made this a function so that we can have the submit form at the top &
+   * bottom of the page.
+   * <a href="http://www.w3schools.com/html/html_forms.asp">Tutorial about
+   * Forms</a>
+   *
+   * @param output where to write our HTML to
+   */
+  public static void printWritrForm(PrintWriter output) {
+    output.println("<div class=\"form\">");
+    output.println("  <form action=\"submit\" method=\"POST\">");
+    output.println("     User: <input type=\"text\" name=\"user\" />");
+    output.println("     <br>Title: <input type=\"text\" name=\"title\" />");
+    output.println("     <br>Message: <input type=\"text\" name=\"message\" />");
+    output.println("     <br><input type=\"submit\" value=\"Write!\" />");
+    output.println("  </form>");
+    output.println("</div>");
+  }
+
+  /**
+   * HTML top boilerplate; put in a function so that I can use it for all the
+   * pages I come up with.
+   *
+   * @param html  where to write to; get this from the HTTP response.
+   * @param title the title of the page, since that goes in the header.
+   */
+  public static void printWritrPageStart(PrintWriter html, String title, String metaURL, String staticURL) {
+    html.println("<!DOCTYPE html>"); // HTML5
+    html.println("<html>");
+    html.println("  <head>");
+    html.println("    <title>" + title + "</title>");
+    html.println("    " + metaURL);
+    html.println("    <link type=\"text/css\" rel=\"stylesheet\" href=\"" +
+        staticURL + "\">");
+    html.println("  </head>");
+    html.println("  <body>");
+    html.println("  <h1 class=\"logo\">Writr</h1>");
+  }
+
+  //getStaticURL("writr.css")
+
+  /**
+   * HTML bottom boilerplate; close all the tags we open in printWritrPageStart.
+   *
+   * @param html where to write to; get this from the HTTP response.
+   */
+  public static void printWritrPageEnd(PrintWriter html) {
+    html.println("  </body>");
+    html.println("</html>");
   }
 
 }
