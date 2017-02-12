@@ -119,7 +119,7 @@ public class WritrView {
         staticURL + "\">");
     html.println("  </head>");
     html.println("  <body>");
-    html.println("  <h1 class=\"logo\">Writr</h1>");
+    html.println("  <a href=\"/\"><h1 class=\"logo\">Writr</h1></a>");
   }
 
   //getStaticURL("writr.css")
