@@ -11,10 +11,6 @@ body {
 label{
     color: white;
 }
-
-labelComment{
-    color:#00FFFF;
-}
 h1,h2,h3{
     line-height:1.2;
     color: rgb(0,87,115)
@@ -25,11 +21,25 @@ a {
 div.form {
     text-align: center;
 }
+h1.title {
+    color: white;
+    text-align: center;
+}
 div.message {
     border: solid 1px #ccc;
     margin: 3pt;
     padding: 3pt;
     background-color: #eee;
+}
+div.comment {
+    border: solid 1px #ccc;
+    margin: 3pt;
+    padding: 3pt;
+    background-color: lightblue;
+    position: relative;
+    max-width: 510pt;
+    left: 100px;
+    font-size:13px;
 }
 span.datetime {
     margin-right: 10pt;

@@ -2,9 +2,6 @@ package edu.mtholyoke.cs341bd.writr;
 
 import java.io.PrintWriter;
 
-/**
- * Created by Sophey on 2/10/17.
- */
 public class WritrView {
 
   /**
@@ -43,14 +40,14 @@ public class WritrView {
    */
   public static void displayComment(StringBuilder output, WritrPost post) {
     output
-        .append("<div class=\"message\">")
+        .append("<div class=\"comment\">")
         .append("<span class=\"datetime\">")
         .append(Util.dateToEST(post.getTimeStamp()))
         .append("</span><br><span>User: ")
         .append(post.getUserText())
         .append("</span><br><span>Title: ")
         .append(post.getTitleText())
-        .append("</span><br><span>Comment: ") //changed this
+        .append("</span><br><span>Comment: ")
         .append(post.getMessageText())
         .append("</span>")
         .append("</div>");
@@ -90,12 +87,12 @@ public class WritrView {
     output.println("<div class=\"form\">");
     output.println("  <form action=\"submitComment/" + uid + "\" " +
         "method=\"POST\">");
-    output.println("  <labelComment>User: <input type=\"text\" name=\"user\" " +
-        "/></labelComment>"); //changed this
-    output.println(" <labelComment><br>Title: <input type=\"text\" name=\"title\" " +
-        "/></labelComment>");
-    output.println("  <labelComment><br>Comment: <input type=\"text\" " +   //changed
-        "name=\"message\" /></labelComment>");
+    output.println("  <label>User: <input type=\"text\" name=\"user\" " +
+        "/></label>");
+    output.println(" <label><br>Title: <input type=\"text\" name=\"title\" " +
+        "/></label>");
+    output.println("  <label><br>Comment: <input type=\"text\" " +
+        "name=\"message\" /></label>");
     output.println("     <br><input type=\"submit\" value=\"Write!\" />");
     output.println("  </form>");
     output.println("</div>");
@@ -121,8 +118,6 @@ public class WritrView {
     html.println("  <body>");
     html.println("  <a href=\"/\"><h1 class=\"logo\">Writr</h1></a>");
   }
-
-  //getStaticURL("writr.css")
 
   /**
    * HTML bottom boilerplate; close all the tags we open in printWritrPageStart.

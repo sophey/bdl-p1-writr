@@ -149,6 +149,7 @@ public class WritrServer extends AbstractHandler {
 
       // Print all of our messages
       html.println("<div class=\"body\">");
+      html.println("<h1 class=\"title\">Post " + uid + "</h1>");
 
       StringBuilder messageHTML = new StringBuilder();
 
