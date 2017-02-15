@@ -142,9 +142,6 @@ public class WritrServer extends AbstractHandler {
 
       int uid = Integer.parseInt(path.substring(5));
 
-      // Print the form at the top of the page
-      WritrView.printCommentForm(html, uid);
-
       // Print all of our messages
       html.println("<div class=\"body\">");
 
@@ -152,6 +149,13 @@ public class WritrServer extends AbstractHandler {
 
       WritrPost writrPost = model.getPost(uid);
       WritrView.displayPost(messageHTML, writrPost);
+
+      html.println(messageHTML);
+
+      // Print the form at the top of the page
+      WritrView.printCommentForm(html, uid);
+
+      messageHTML = new StringBuilder();
 
       List<WritrPost> comments = writrPost.getComments();
       for (WritrPost post : comments) {
