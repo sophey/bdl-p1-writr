@@ -50,7 +50,7 @@ public class WritrView {
         .append(post.getUserText())
         .append("</span><br><span>Title: ")
         .append(post.getTitleText())
-        .append("</span><br><span>Message: ")
+        .append("</span><br><span>Comment: ") //changed this
         .append(post.getMessageText())
         .append("</span>")
         .append("</div>");
@@ -94,7 +94,7 @@ public class WritrView {
         "/></label>"); //changed this
     output.println(" <label><br>Title: <input type=\"text\" name=\"title\" " +
         "/></label>");
-    output.println("  <label><br>Message: <input type=\"text\" " +
+    output.println("  <label><br>Comment: <input type=\"text\" " +   //changed
         "name=\"message\" /></label>");
     output.println("     <br><input type=\"submit\" value=\"Write!\" />");
     output.println("  </form>");
