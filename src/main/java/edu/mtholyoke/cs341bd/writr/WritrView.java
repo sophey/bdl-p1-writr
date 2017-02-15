@@ -90,12 +90,12 @@ public class WritrView {
     output.println("<div class=\"form\">");
     output.println("  <form action=\"submitComment/" + uid + "\" " +
         "method=\"POST\">");
-    output.println("  <label>User: <input type=\"text\" name=\"user\" " +
-        "/></label>"); //changed this
-    output.println(" <label><br>Title: <input type=\"text\" name=\"title\" " +
-        "/></label>");
-    output.println("  <label><br>Comment: <input type=\"text\" " +   //changed
-        "name=\"message\" /></label>");
+    output.println("  <labelComment>User: <input type=\"text\" name=\"user\" " +
+        "/></labelComment>"); //changed this
+    output.println(" <labelComment><br>Title: <input type=\"text\" name=\"title\" " +
+        "/></labelComment>");
+    output.println("  <labelComment><br>Comment: <input type=\"text\" " +   //changed
+        "name=\"message\" /></labelComment>");
     output.println("     <br><input type=\"submit\" value=\"Write!\" />");
     output.println("  </form>");
     output.println("</div>");
