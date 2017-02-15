@@ -103,6 +103,7 @@ public class WritrServer extends AbstractHandler {
     }
 
     try (PrintWriter html = resp.getWriter()) {
+    	
       WritrView.printWritrPageStart(html, "Writr", metaURL, getStaticURL
           ("writr.css"));
 
@@ -130,10 +131,14 @@ public class WritrServer extends AbstractHandler {
         // Print the submission form again at the bottom of the page
         WritrView.printWritrForm(html);
       }
+     
       WritrView.printWritrPageEnd(html);
+    	
+    	
     }
   }
 
+  //I modified this
   private void handlePostPage(String path, HttpServletResponse resp) throws
       IOException {
     try (PrintWriter html = resp.getWriter()) {
@@ -158,13 +163,15 @@ public class WritrServer extends AbstractHandler {
       messageHTML = new StringBuilder();
 
       List<WritrPost> comments = writrPost.getComments();
+      
       for (WritrPost post : comments) {
+    	  
         WritrView.displayComment(messageHTML, post);
       }
-
+    
       html.println(messageHTML);
       html.println("</div>");
-
+    
       WritrView.printWritrPageEnd(html);
     }
   }

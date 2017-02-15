@@ -11,6 +11,10 @@ body {
 label{
     color: white;
 }
+
+labelComment{
+    color:#00FFFF;
+}
 h1,h2,h3{
     line-height:1.2;
     color: rgb(0,87,115)
